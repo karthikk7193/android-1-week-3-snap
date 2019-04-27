@@ -34,7 +34,7 @@ public class ChatItemViewHolder extends RecyclerView.ViewHolder {
 
     private ChatItemViewHolder(@NonNull View itemView) {
         super(itemView);
-        
+
         imageView = itemView.findViewById(R.id.vci_image);
         titleView = itemView.findViewById(R.id.vci_title);
         subtitleView = itemView.findViewById(R.id.vci_subtitle);
@@ -80,7 +80,7 @@ public class ChatItemViewHolder extends RecyclerView.ViewHolder {
         titleView.setText(chat.getFromName());
         imageView.setImageTintList(ColorStateList.valueOf(chat.getColor()));
         emojiView.setText(chat.getEmoji());
-        
+
         switch(chat.getState()) {
             case SENT:
                 subtitleView.setText(itemView.getContext().getString(R.string.sent));

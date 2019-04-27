@@ -1,9 +1,12 @@
 package com.ucsdextandroid1.snapapp.stories;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.ucsdextandroid1.snapapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,17 +16,20 @@ import java.util.List;
  */
 public class StoriesAdapter extends RecyclerView.Adapter {
 
-    //TODO The first thing your should do is finish the StoriesListItem class at the bottom
+    //TO DO The first thing your should do is finish the StoriesListItem class at the bottom
 
     private List<StoriesListItem> items = new ArrayList<>();
 
     public void setItems(Context context, List<Story> stories) {
         items.clear();
 
-        //TODO add title item to our list of StoriesListItems
-        //hint, you can use using context.getString(R.string.stories)) to get a String
+        //TO DO add title item to our list of StoriesListItems
+        items.add(new StoriesListItem(context.getString(R.string.stories)));
 
-        //TODO add all of the story items to the list of StoriesListItems
+        //TO DO add all of the story items to the list of StoriesListItems
+        for (Story story : stories) {
+            items.add(new StoriesListItem(story));
+        }
 
         //TODO let the adapter know that  the data has changed
     }
@@ -31,26 +37,53 @@ public class StoriesAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        //TODO return the correct view holder for each viewType. We want to return the
+        //TO DO return the correct view holder for each viewType. We want to return the
         // StoriesSectionTitleViewHolder for our title and the StoryCardViewHolder for our items.
-        return null;
+
+        Log.d("StoriesAdapter", String.valueOf(viewType));
+        switch(viewType) {
+            case StoriesListItem.TYPE_TITLE:
+                return StoriesSectionTitleViewHolder.inflate(parent);
+            case StoriesListItem.TYPE_STORY:
+                return StoryCardViewHolder.inflate(parent);
+            default:
+                throw new IllegalArgumentException("Unrecognized view type");
+        }
+
+
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        //TODO bind the title or the story to the correct view holder
+        //TO DO bind the title or the story to the correct view holder
+        if(holder instanceof StoriesSectionTitleViewHolder)
+            ((StoriesSectionTitleViewHolder) holder).bind( items.get(position).getTitle() );
+        else if(holder instanceof StoryCardViewHolder)
+            ((StoryCardViewHolder) holder).bind( items.get(position).getStory() );
     }
 
     @Override
     public int getItemCount() {
-        // TODO return the correct item count
-        return 0;
+        // TO DO return the correct item count
+        return items.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        //TODO return the correct view type
-        return 0;
+        //TO DO return the correct view type
+        return items.get(position).getType();
+    }
+
+    public int getSpanSize(int position) {
+        switch(getItemViewType(position)) {
+            case StoriesListItem.TYPE_TITLE:
+                return 2;
+            case StoriesListItem.TYPE_STORY:
+                return 1;
+            default:
+                throw new IllegalArgumentException("Unrecognized view type");
+        }
     }
 
     //TODO add a method that returns the correct span for each item type. It should take in the
@@ -61,14 +94,36 @@ public class StoriesAdapter extends RecyclerView.Adapter {
 
     //TODO finish creating a class that holds both the story and the title
     private class StoriesListItem {
-
+        //TO DO you will need to add 2 constructors, one that takes in a String title, and another that
+        // takes in a Story story. We need this data class to represent all the possibilities for
+        // our list.
         public static final int TYPE_TITLE = 1;
         public static final int TYPE_STORY = 2;
 
-        // you will need to add 2 constructors, one that takes in a String title, and another that
-        // takes in a Story story. We need this data class to represent all the possibilities for
-        // our list.
+        private String title = null;
+        private Story story = null;
+        private int type;
 
+        public StoriesListItem (String title) {
+            this.title = title;
+            this.type = TYPE_TITLE;
+        }
+        public StoriesListItem (Story story){
+            this.story = story;
+            this.type = TYPE_STORY;
+        }
+
+        public Story getStory() {
+            return story;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public int getType() {
+            return type;
+        }
     }
 
 }

@@ -9,11 +9,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+
+
+import java.util.List;
+
 import com.ucsdextandroid1.snapapp.DataSources;
 import com.ucsdextandroid1.snapapp.R;
 import com.ucsdextandroid1.snapapp.util.WindowUtil;
 
-import java.util.List;
 
 /**
  * Created by rjaylward on 4/15/19
@@ -38,11 +44,21 @@ public class StoriesFragment extends Fragment {
         WindowUtil.doOnApplyWindowInsetsToMargins(background, true, false);
         WindowUtil.doOnApplyWindowInsetsToPadding(recyclerView, true, true);
 
-        //TODO create a StoriesAdapter
+        StoriesAdapter storiesAdapter = new StoriesAdapter();
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return storiesAdapter.getSpanSize(position);
+            }
+        });
 
         //TODO create a grid layout manager with default span of 2 and the SpanSizeLookup for each type
 
         //TODO set up the recyclerView with the layoutManager and adapter
+        recyclerView.setAdapter(storiesAdapter);
+        recyclerView.setLayoutManager(gridLayoutManager);
 
         //TODO add a callback to the adapter that calls the method onStoryClicked when the user clicks on the list item
 
@@ -50,6 +66,7 @@ public class StoriesFragment extends Fragment {
             @Override
             public void onDataFetched(List<Story> data) {
                 //TODO set the data from the DataSource to the adapter
+                storiesAdapter.setItems(getContext(),data);
             }
         });
 
